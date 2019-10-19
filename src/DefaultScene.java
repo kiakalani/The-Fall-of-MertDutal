@@ -42,22 +42,21 @@ public abstract class DefaultScene extends Group {
             public void handle(long now) {
                 for (Sphere sphere:stars) {
                     sphere.setRadius(random.nextInt(5));
-                    moveStars();
                 }
+                moveStars();
             }
         };
         a.start();
     }
     private void moveStars() {
-        for (Sphere sphere:stars) {
-            sphere.setTranslateY(getTranslateY()-10);
-            if (sphere.getTranslateY()<0) {
-                sphere.setTranslateY(768);
-            }
+        for (int i=0;i<10;i++) {
+            stars.add(new Sphere(random.nextInt(5),random.nextInt(5)));
+            stars.get(stars.size()-1).setTranslateX((double)random.nextInt(1024));
+            stars.get(stars.size()-1).setTranslateY((double)random.nextInt(768));
+            getChildren().add(stars.get(stars.size()-1));
+            int rannum=random.nextInt(stars.size());
+            getChildren().remove(stars.get(rannum));
+            stars.remove(rannum);
         }
-    }
-
-    public LinkedList<Sphere> getStars() {
-        return stars;
     }
 }
