@@ -2,9 +2,11 @@ import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Run extends Application {
+    private final static Audio audio=new Audio("dir/MainMusic.wav");
     /**
      * The stage
      */
@@ -18,7 +20,9 @@ public class Run extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         stage=primaryStage;
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("bin/mainIcon.png")));
         swapScene(new MainMenu());
+        audio.play();
         stage.show();
     }
 

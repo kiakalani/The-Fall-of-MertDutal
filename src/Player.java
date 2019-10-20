@@ -1,44 +1,63 @@
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.shape.Sphere;
+import javafx.util.Duration;
 
 import java.util.LinkedList;
 
 public class Player extends ImageView {
     private String name;
-    private int health;
+    private LinkedList<ImageView> life = new LinkedList<>();
     private int score;
-    private final static double speed=0.1;
-    private int currentSpeed=0;
-    private LinkedList<Bullet> bullets=new LinkedList<>();
+    private final static double speed = 0.1;
+    private int currentSpeed = 0;
+    private int load = 10;
+    private LinkedList<Bullet> bullets = new LinkedList<>();
+
     public Player(String name) {
-        health=3;
-        score=0;
-        this.name=name;
+        for (int i = 0; i < 3; i++) {
+            life.add(new ImageView(new Image("bin/heart.png")));
+            life.get(i).setFitHeight(20);
+            life.get(i).setFitWidth(20);
+            life.get(i).setTranslateX(500 + (25 * i));
+        }
+        score = 0;
+        this.name = name;
         setImage(new Image("bin/main_ship.png"));
         setTranslateX(450);
         setTranslateY(650);
-        AnimationTimer a=new AnimationTimer() {
+        AnimationTimer a = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 move();
             }
         };
         a.start();
+        reloadTimer.getKeyFrames().add(new KeyFrame(Duration.seconds(2.5), new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                    reloadTimer.stop();
+                    load = 10;
+                    rVal = 0;
+            }
+        }));
     }
 
+    private int rVal = 0;
+
     private void move() {
-        if (getTranslateX()<3) {
+        if (getTranslateX() < 3) {
             setTranslateX(3);
-            System.out.println("Low");
         }
-        if (getTranslateX()>900) {
+        if (getTranslateX() > 900) {
             setTranslateX(900);
-            System.out.println("High");
         }
-        setTranslateX(getTranslateX()+currentSpeed);
+        setTranslateX(getTranslateX() + currentSpeed);
     }
 
     public String getName() {
@@ -48,6 +67,7 @@ public class Player extends ImageView {
     public void setName(String name) {
         this.name = name;
     }
+
     public void keyPressed(KeyEvent e) {
         switch (e.getCode()) {
             case A:
@@ -58,19 +78,22 @@ public class Player extends ImageView {
                 break;
         }
     }
+
     private void rightPressed() {
-        if (currentSpeed<9) {
-            currentSpeed=9;
+        if (currentSpeed < 9) {
+            currentSpeed = 9;
         }
-        currentSpeed+=speed;
+        currentSpeed += speed;
     }
+
     private void leftPressed() {
-        if (currentSpeed>-9) {
-            currentSpeed=-9;
+        if (currentSpeed > -9) {
+            currentSpeed = -9;
         }
-        currentSpeed-=speed;
+        currentSpeed -= speed;
     }
-    public void keyReleased(KeyEvent e){
+
+    public void keyReleased(KeyEvent e) {
         switch (e.getCode()) {
             case A:
                 stopMovement();
@@ -79,25 +102,30 @@ public class Player extends ImageView {
                 stopMovement();
                 break;
             case C:
-                bullets.add(new Bullet(getTranslateX(),getTranslateY()));
+                if (load > 0) {
+                    new Audio("dir/bullet.wav").playNormal();
+                    bullets.add(new Bullet(getTranslateX(), getTranslateY()));
+                    load--;
+                }
                 break;
+            case V:
+                if (load <= 0) {
+                    reloadTimer.playFromStart();
+                }
+
         }
     }
+
+    private Timeline reloadTimer = new Timeline();
 
     public LinkedList<Bullet> getBullets() {
         return bullets;
     }
+
     public void addScore() {
-        score+=100;
+        score += 50;
     }
 
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
-    }
 
     public int getScore() {
         return score;
@@ -108,34 +136,42 @@ public class Player extends ImageView {
     }
 
     public void addBossScore() {
-        score+=1000;
+        score += 1000;
+    }
+
+    public LinkedList<ImageView> getLife() {
+        return life;
     }
 
     private void stopMovement() {
-        if (currentSpeed>0) {
-            AnimationTimer a=new AnimationTimer() {
+        if (currentSpeed > 0) {
+            AnimationTimer a = new AnimationTimer() {
                 @Override
                 public void handle(long now) {
-                    currentSpeed-=0.8;
-                    if (currentSpeed<=0.5) {
-                        currentSpeed=0;
+                    currentSpeed -= 0.8;
+                    if (currentSpeed <= 0.5) {
+                        currentSpeed = 0;
                         this.stop();
                     }
                 }
             };
             a.start();
-        }else {
-            AnimationTimer a=new AnimationTimer() {
+        } else {
+            AnimationTimer a = new AnimationTimer() {
                 @Override
                 public void handle(long now) {
-                    currentSpeed+=0.8;
-                    if (currentSpeed>=-0.5) {
-                        currentSpeed=0;
+                    currentSpeed += 0.8;
+                    if (currentSpeed >= -0.5) {
+                        currentSpeed = 0;
                         this.stop();
                     }
                 }
             };
             a.start();
         }
+    }
+
+    public int getLoad() {
+        return load;
     }
 }

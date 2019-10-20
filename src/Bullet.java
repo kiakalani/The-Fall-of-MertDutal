@@ -7,6 +7,7 @@ public class Bullet extends ImageView {
     public Bullet(double x, double y) {
         setTranslateX(x+25);
         setTranslateY(y);
+        setFitWidth(15);
         setImage(new Image("bin/laserbullet.png"));
         moveBullet=new AnimationTimer() {
             @Override
@@ -27,5 +28,14 @@ public class Bullet extends ImageView {
             stopTimer();
             return true;
         }else return false;
+    }
+    public boolean bulletHitMob(Mobs mobs, Player player) {
+        boolean b=false;
+        if (getBoundsInParent().intersects(mobs.getBoundsInParent())){
+            b = true;
+            System.out.println(5);
+            player.addScore();
+        }
+        return b;
     }
 }

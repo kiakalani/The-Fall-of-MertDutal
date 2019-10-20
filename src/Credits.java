@@ -12,8 +12,8 @@ public class Credits extends DefaultScene {
                 "Lead Graphic Designer: Vanya Chirkov\n" +
                 "Lead Music Developer: Royalty Free Music from Bensound\n" +
                 "\n" +
-                "       In Memory of\n" +
-                "       MertDutal\n");
+                "               In Memory of\n" +
+                "               MertDutal\n");
         label.setTextFill(Color.BLUE);
         label.setFont(new Font(30));
         label.setTranslateX(20);

@@ -87,7 +87,7 @@ public class MainMenu extends DefaultScene {
                 Run.swapScene(new Credits());
                 break;
             case HIGHSCORE:
-                Run.swapScene(new HighScore());
+                Run.swapScene(new HighScores());
                 break;
             case QUIT:
                 System.exit(0);
